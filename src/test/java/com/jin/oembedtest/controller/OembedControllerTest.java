@@ -12,7 +12,9 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.ui.Model;
@@ -47,9 +49,15 @@ public class OembedControllerTest {
     MockMvc mvc;
 
 
+
+
     @Test
     public void parsingOembedSuccess() throws Exception {
-
+        mvc.perform(
+                MockMvcRequestBuilders
+                        .get("/") // 넣어준 컨트롤러의 Http Method 와 URL 을 지정
+                        .accept(MediaType.APPLICATION_JSON) // accept encoding 타입을 지정
+        );
 
     }
 
