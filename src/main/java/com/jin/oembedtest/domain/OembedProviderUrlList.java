@@ -23,7 +23,7 @@ public class OembedProviderUrlList {
     private static JSONArray jsonArray;
     private static ResourceLoader resourceLoader;
 
-    public OembedProviderUrlList() throws IOException {
+    public OembedProviderUrlList() throws Exception {
 
         urlList = new ArrayList<String>();
         jsonParser = new JSONParser();

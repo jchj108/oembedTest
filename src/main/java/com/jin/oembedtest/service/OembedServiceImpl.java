@@ -22,7 +22,7 @@ public class OembedServiceImpl implements OembedService {
     private List<String> urlList = new ArrayList<>();
 
     @Override
-    public Map<String, Oembed> parsingOembed(Oembed oembed, List<String> urlList, Model model) throws IOException {
+    public Map<String, Oembed> parsingOembed(Oembed oembed, List<String> urlList) throws Exception {
         String url = oembed.getUrl().trim();
         String[] arr = url.split("\\.");
         String res = "";
@@ -39,7 +39,7 @@ public class OembedServiceImpl implements OembedService {
                     break;
                 }
             }
-            oembed = CallOembed(res, model);
+            oembed = CallOembed(res);
         } catch (IllegalArgumentException e) {
             oembed.setErrorMsg(e.getMessage());
             e.printStackTrace();
@@ -55,7 +55,7 @@ public class OembedServiceImpl implements OembedService {
     }
 
     @Override
-    public Oembed CallOembed(String requestUrl, Model model) {
+    public Oembed CallOembed(String requestUrl) {
 
         Oembed oembed = new Oembed();
 

@@ -31,10 +31,10 @@ public class OembedController {
 
     @ResponseBody
     @RequestMapping("/oembed/parsingOembed")
-    public Map<String, Oembed> parsingOembed(HttpServletRequest request, @ModelAttribute Oembed oembed, Model model) throws IOException {
+    public Map<String, Oembed> parsingOembed(HttpServletRequest request, @ModelAttribute Oembed oembed) throws Exception {
 
         List<String> urlList = oembedUrlList.getUrlList();
-        Map<String, Oembed> url = oembedService.parsingOembed(oembed, urlList, model);
+        Map<String, Oembed> url = oembedService.parsingOembed(oembed, urlList);
 
         return url;
     }

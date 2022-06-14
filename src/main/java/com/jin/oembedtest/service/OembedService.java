@@ -10,6 +10,6 @@ import java.util.Map;
 
 public interface OembedService {
 
-    Map<String,Oembed> parsingOembed(Oembed oembed, List<String> urlList, Model model) throws IOException;
-    Oembed CallOembed(String url, Model model);
+    Map<String,Oembed> parsingOembed(Oembed oembed, List<String> urlList) throws Exception;
+    Oembed CallOembed(String url);
 }
