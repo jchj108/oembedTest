@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -17,42 +16,60 @@
         <!-- Core theme JS-->
         <script src="/js/scripts.js"></script>
     </head>
+        <style>
+            #request_container {
+                width: 1000px;
+                border-radius: 4px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            #response_container {
+                width: 1000px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            #response_container .col {
+                padding-top: 5px;
+                padding-bottom: 5px;
+            }
+            #response_container .row {
+                width: 1000px;
+                margin-left: auto;
+                margin-right: auto;
+                border: 1px solid rgb(206, 212, 218);
+
+            }
+
+        </style>
     <body>
         <!-- Responsive navbar-->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
                 <a class="navbar-brand" href="#">oEmbedTest</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Link</a></li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Another action</a></li>
-                                <li><hr class="dropdown-divider" /></li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
             </div>
         </nav>
         <!-- Page content-->
         <div class="container">
-            <div class="text-center mt-5">
-                <h1>A Bootstrap 5 Starter Template</h1>
-
-                <div class="input-group">
-                    <input type="text" id="input_url" class="form-control" placeholder="url을 입력하세요" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                    <div class="input-group-append">
-                        <button id="btn_send" class="btn btn-primary" type="button">  확인  </button>
+            <div id="request_container">
+                <div class="text-center mt-5">
+                    <h1>oEmbed test application</h1>
+                    <div class="input-group">
+                        <input type="text" id="input_url" class="form-control" placeholder="url을 입력하세요" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button id="btn_send" class="btn btn-primary" type="button">  확인  </button>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <div id="response_container" class="mt-5 mb-5">
+            </div>
         </div>
+
+
 
         <script>
             document.getElementById('btn_send').addEventListener('click', function() {
@@ -61,22 +78,80 @@
 
 
             function parsingOembed() {
-
                 let param = {};
                 param.url = document.getElementById('input_url').value
-
                 $.ajax({
                     url: '/oembed/parsingOembed',
                     data: param,
                     success: function (data) {
 
+                        console.log(data);
+
+                        if(data.oembed.errorMsg == null) {
+                            parsingOembedCallback(data.oembed);
+                        } else {
+                            alert(data.oembed.errorMsg)
+                        }
+
                     },
                     error:function (data, status, error) {
-                        console.log(error)
+                        console.log(data);
                     }
                 });
+            }
+
+            function parsingOembedCallback(oembed) {
+                let render = document.getElementById('response_container');
+                let data = "";
+                if(oembed.title != null){
+                    data = "<div class='row'><div class='col'>title</div><div class='col'>" + oembed.title + "</div></div>";
+                }
+                if(oembed.type != null)
+                    data += "<div class='row'><div class='col'>type</div><div class='col'>" + oembed.type + "</div></div>";
+                if(oembed.version != null)
+                    data += "<div class='row'><div class='col'>version</div><div class='col'>" + oembed.version + "</div></div>";
+                if(oembed.provider_name != null)
+                    data += "<div class='row'><div class='col'>provider_name</div><div class='col'>" + oembed.provider_name + "</div></div>";
+                if(oembed.provider_url != null)
+                    data += "<div class='row'><div class='col'>provider_url</div><div class='col'><a href='" + oembed.provider_url + "'>" + oembed.provider_url + "</a></div></div>";
+                if(oembed.author_name != null)
+                    data += "<div class='row'><div class='col'>author_name</div><div class='col'>" + oembed.author_name + "</div></div>";
+                if(oembed.author_url != null)
+                    data += "<div class='row'><div class='col'>author_url</div><div class='col'><a href='" + oembed.author_url + "'>" + oembed.author_url + "</a></div></div>";
+                if(oembed.is_plus != null)
+                    data += "<div class='row'><div class='col'>is_plus</div><div class='col'>" + oembed.is_plus + "</div></div>";
+                if(oembed.html != null)
+                    data +=  "<div class='row'><div class='col'>html</div><div class='col'>" + oembed.html + "</div></div>";
+                if(oembed.width != null)
+                    data += "<div class='row'><div class='col'>width</div><div class='col'>" + oembed.width + "</div></div>";
+                if(oembed.height != null)
+                    data +=  "<div class='row'><div class='col'>height</div><div class='col'>" + oembed.height + "</div></div>";
+                if(oembed.duration != null)
+                    data +=  "<div class='row'><div class='col'>duration</div><div class='col'>" + oembed.duration + "</div></div>";
+                if(oembed.description != null)
+                    data +=  "<div class='row'><div class='col'>description</div><div class='col'>" + oembed.description + "</div></div>";
+                if(oembed.thumbnail_url != null)
+                    data +=  "<div class='row'><div class='col'>thumbnail_url</div><div class='col'><a href='"
+                        +oembed.thumbnail_url+"'>" + oembed.thumbnail_url + "</a><img src='"+oembed.thumbnail_url+"'/></div>";
+                if(oembed.thumbnail_width != null)
+                    data +=  "<div class='row'><div class='col'>thumbnail_width</div><div class='col'>" + oembed.thumbnail_width + "</div></div>";
+                if(oembed.thumbnail_height != null)
+                    data +=  "<div class='row'><div class='col'>thumbnail_height</div><div class='col'>" + oembed.thumbnail_height + "</div></div>";
+                if(oembed.thumbnail_url_with_play_button != null)
+                    data +=  "<div class='row'><div class='col'>thumbnail_url_with_play_button</div><div class='col'>" + oembed.thumbnail_url_with_play_button + "</div></div>";
+                if(oembed.upload_data != null)
+                    data +=  "<div class='row'><div class='col'>upload_data</div><div class='col'>" + oembed.upload_data + "</div></div>";
+                if(oembed.video_id != null)
+                    data +=  "<div class='row'><div class='col'>video_id</div><div class='col'>" + oembed.video_id + "</div></div>";
+                if(oembed.uri != null)
+                    data +=  "<div class='row'><div class='col'>uri</div><div class='col'>" + oembed.uri + "</div></div>";
+                if(oembed.cache_age != null)
+                    data +=  "<div class='row'><div class='col'>cache_age</div><div class='col'>" + oembed.cache_age + "</div></div>";
+
+                render.innerHTML = data;
 
             }
+
 
         </script>
     </body>

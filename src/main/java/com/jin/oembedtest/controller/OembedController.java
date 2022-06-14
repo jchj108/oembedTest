@@ -1,39 +1,41 @@
 package com.jin.oembedtest.controller;
 
+import com.jin.oembedtest.domain.OembedProviderUrlList;
 import com.jin.oembedtest.dto.Oembed;
 import com.jin.oembedtest.service.OembedService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class OembedController {
 
-//    private final OembedService oembedService;
-//
-//    public OembedController(OembedService oembedService) {
-//        this.oembedService = oembedService;
-//    }
+    @Autowired
+    OembedService oembedService;
 
+    @Autowired
+    OembedProviderUrlList oembedUrlList;
 
     @RequestMapping("/")
     public String home() {
-        return "home";
+        return "/index";
     }
 
+    @ResponseBody
     @RequestMapping("/oembed/parsingOembed")
-    public String parsingOembed(HttpServletRequest request, @ModelAttribute Oembed oembed) {
+    public Map<String, Oembed> parsingOembed(HttpServletRequest request, @ModelAttribute Oembed oembed, Model model) throws IOException {
 
-        System.out.println(oembed.getUrl());
+        List<String> urlList = oembedUrlList.getUrlList();
+        Map<String, Oembed> url = oembedService.parsingOembed(oembed, urlList, model);
 
-        return "index";
+        return url;
     }
-
-
-
-
 }
