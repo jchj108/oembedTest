@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Map;
 
@@ -27,18 +28,28 @@ public class OembedController {
     @Autowired
     OembedProviderUrlList oembedUrlList;
 
-    @ExceptionHandler(StringIndexOutOfBoundsException.class)
-    public ResponseEntity<String> handleStringIndexOutOfBoundsException(StringIndexOutOfBoundsException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
-    }
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<String> handleIllegalStateException(IllegalStateException exception) {
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(exception.getMessage());
+        exception.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.getMessage());
     }
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+        exception.printStackTrace();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage()); // 400
     }
+    @ExceptionHandler(StringIndexOutOfBoundsException.class)
+    public ResponseEntity<String> handleStringIndexOutOfBoundsException(StringIndexOutOfBoundsException exception) {
+        exception.printStackTrace();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("올바른 URL 형식이 아닙니다"); // 400
+    }
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<String> handleNullPointerException(NullPointerException exception) {
+        exception.printStackTrace();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("url을 입력해주세요"); // 400
+    }
+
+
 
     @RequestMapping("/")
     public String home() {
@@ -50,8 +61,8 @@ public class OembedController {
     public Map<String, Oembed> parsingOembed(HttpServletRequest request, @ModelAttribute Oembed oembed) throws Exception {
 
         List<String> urlList = oembedUrlList.getUrlList();
-        Map<String, Oembed> url = oembedService.parsingOembed(oembed, urlList);
+        Map<String, Oembed> map = oembedService.parsingOembed(oembed, urlList);
 
-        return url;
+        return map;
     }
 }

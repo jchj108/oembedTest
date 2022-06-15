@@ -19,6 +19,4 @@ public class Oembed {
     private int thumbnail_width;
     private String thumbnail_url;
     private String html;
-    private String errorMsg;
-
 }

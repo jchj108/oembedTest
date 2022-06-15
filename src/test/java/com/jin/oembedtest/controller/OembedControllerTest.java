@@ -28,33 +28,88 @@ public class OembedControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Before
-    public void setup() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(OembedController.class)
-                .build();
-    }
-
 
     @Test
     public void homeTest() throws Exception {
         mockMvc.perform(
-                get("/") // 넣어준 컨트롤러의 Http Method 와 URL 을 지정
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())		// 예상 응답
-                .andDo(print())					// 호출 결과 로깅
+                        get("/"))
+                .andExpect(status().isOk())
+                .andDo(print())
                 .andReturn();
     }
 
     @Test
-    public void parsingOembedFail400() throws Exception {
-        // Given
+    public void parsingOembedSuccess() throws Exception {
+        // given
+        String url = "https://www.youtube.com/watch?v=bJfbPWEMj_c&ab_channel=%EB%B0%B1%EA%B8%B0%EC%84%A0";
+        // then
+        mockMvc.perform(
+                        get("/oembed/parsingOembed")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .param("url", url))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andReturn();
+    }
+
+    @Test
+    public void parsingOembedFail400Npe() throws Exception { // BAD_REQUEST NPE
+        // given
+        String url = null;
+        // then
+        mockMvc.perform(
+                        get("/oembed/parsingOembed")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .param("url", url))
+                .andExpect(status().isBadRequest())
+                .andDo(print())
+                .andReturn();
+    }
+
+    @Test
+    public void parsingOembedFail400() throws Exception { // BAD_REQUEST
+        // given
         String url = "test";
         // then
         mockMvc.perform(
-                get("/oembed/parsingOembed")
-                        .param("url", url))
-                .andExpect(status().isBadRequest()
-                );
+                        get("/oembed/parsingOembed")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .param("url", url))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andReturn();
+    }
+
+    @Test
+    public void parsingOembedFail400ParsingError() throws Exception { // NOT_ACCEPTABLE
+        // given
+        String url = "test.test.test";
+        // then
+        mockMvc.perform(
+                        get("/oembed/parsingOembed")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .param("url", url))
+                .andExpect(status().isBadRequest())
+                .andDo(print())
+                .andReturn();
+    }
+
+    @Test
+    public void parsingOembedFail500() throws Exception { // INTERNAL_SERVER_ERROR
+        // given
+        String url = "https://www.youtube.com/watch?v=asedzxcvzxcv";
+        // then
+        mockMvc.perform(
+                        get("/oembed/parsingOembed")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .param("url", url))
+                .andExpect(status().isInternalServerError())
+                .andDo(print())
+                .andReturn();
     }
 }

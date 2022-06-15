@@ -11,5 +11,5 @@ import java.util.Map;
 public interface OembedService {
 
     Map<String,Oembed> parsingOembed(Oembed oembed, List<String> urlList) throws Exception;
-    Oembed CallOembed(String url);
+    Oembed CallOembed(String url) throws Exception;
 }
