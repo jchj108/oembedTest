@@ -84,9 +84,7 @@
                     url: '/oembed/parsingOembed',
                     data: param,
                     success: function (data) {
-
                         console.log(data);
-
                         if(data.oembed.errorMsg == null) {
                             parsingOembedCallback(data.oembed);
                         } else {
@@ -94,8 +92,9 @@
                         }
 
                     },
-                    error:function (data, status, error) {
-                        console.log(data);
+                    error:function (err) {
+                        console.log(err);
+                        alert(err.responseText);
                     }
                 });
             }

@@ -28,29 +28,20 @@ public class OembedServiceImpl implements OembedService {
         String res = "";
         Map<String, Oembed> map = new HashMap<>();
 
-        try {
-            if (arr.length < 3) {
-                throw new IllegalArgumentException("올바른 URL 형식이 아닙니다");
-            }
-            String host = arr[0] + "." + arr[1] + "." + arr[2].substring(0, arr[2].lastIndexOf("/"));
-            for (String providerUrl : urlList) {
-                if (providerUrl.contains(host)) {
-                    res = providerUrl + "?url=" + URLEncoder.encode(oembed.getUrl(), "euc-kr");
-                    break;
-                }
-            }
-            oembed = CallOembed(res);
-        } catch (IllegalArgumentException e) {
-            oembed.setErrorMsg(e.getMessage());
-            e.printStackTrace();
-        } catch (StringIndexOutOfBoundsException e) {
-            oembed.setErrorMsg("URL을 파싱하는 중 오류가 발생했습니다.");
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            map.put("oembed", oembed);
+        if (arr.length < 3) {
+            throw new IllegalArgumentException("올바른 URL 형식이 아닙니다");
         }
+        String host = arr[0] + "." + arr[1] + "." + arr[2].substring(0, arr[2].lastIndexOf("/"));
+        for (String providerUrl : urlList) {
+            if (providerUrl.contains(host)) {
+                res = providerUrl + "?url=" + URLEncoder.encode(oembed.getUrl(), "euc-kr");
+                break;
+            }
+        }
+        oembed = CallOembed(res);
+
+        map.put("oembed", oembed);
+
         return map;
     }
 
